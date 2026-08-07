@@ -33,6 +33,9 @@ impl UtxoLedger {
 
         output_id
     }
+    pub fn get_output(&self, output_id: OutputId) -> Option<&TxOutput> {
+    self.utxos.get(&output_id)
+    }
 }
 
 #[cfg(test)]
@@ -58,4 +61,22 @@ mod tests {
         assert_eq!(ledger.utxos.len(), 1);
         assert_eq!(ledger.next_output_id, 1);
     }
+    #[test]
+fn returns_existing_output() {
+    let mut ledger = UtxoLedger::new();
+
+    let output_id =
+        ledger.create_genesis_output(String::from("Alice"), 100);
+
+    let output = ledger.get_output(output_id);
+
+    assert_eq!(
+        output,
+        Some(&TxOutput {
+            owner: String::from("Alice"),
+            amount: 100,
+        })
+    );
+}
+
 }
